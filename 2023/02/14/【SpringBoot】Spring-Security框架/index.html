@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <script src="/live2d-widget/autoload.js"></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="codeva-jBwY0VGsSB">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Mulish:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ricar0.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简介Spring Security是Spring家族中的一个安全管理框架。相比于另外一个安全框架Shiro，他提供更丰富的功能，社区资源也比Shiro丰富。 一般来说中大型的项目都是使用SpringSecurity来做安全框架。小项目用Shiro的比较多，相比于SpringSecurity，Shiro的上手更加简单。 一般Web应用需要进行认证和授权。 认证：验证当前访问系统的是不是本系统的用户，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringBoot】Spring Security框架">
+<meta property="og:url" content="https://ricar0.github.io/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="kakaの博客">
+<meta property="og:description" content="简介Spring Security是Spring家族中的一个安全管理框架。相比于另外一个安全框架Shiro，他提供更丰富的功能，社区资源也比Shiro丰富。 一般来说中大型的项目都是使用SpringSecurity来做安全框架。小项目用Shiro的比较多，相比于SpringSecurity，Shiro的上手更加简单。 一般Web应用需要进行认证和授权。 认证：验证当前访问系统的是不是本系统的用户，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-02-14T12:01:34.000Z">
+<meta property="article:modified_time" content="2023-03-01T06:34:05.755Z">
+<meta property="article:author" content="ricar0">
+<meta property="article:tag" content="SpringSecurity">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://ricar0.github.io/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" />
+  <title>【SpringBoot】Spring Security框架 | kakaの博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  
+  
+    <script src="/js/cursor/fireworks.js"></script>
+  
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a target="_blank" rel="noopener" href="https://github.com/ricar0?tab=repositories" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">kakaの博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">你所热爱的，就是你的生活</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-分类专栏">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ricar0.github.io/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/img.jpg">
+      <meta itemprop="name" content="ricar0">
+      <meta itemprop="description" content="退役ACMer/足球狗/刀斯林">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="kakaの博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringBoot】Spring Security框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-14 20:01:34" itemprop="dateCreated datePublished" datetime="2023-02-14T20:01:34+08:00">2023-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-01 14:34:05" itemprop="dateModified" datetime="2023-03-01T14:34:05+08:00">2023-03-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/SpringSecurity/" itemprop="url" rel="index"><span itemprop="name">SpringSecurity</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/" class="post-meta-item leancloud_visitors" data-flag-title="【SpringBoot】Spring Security框架" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>26k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>23 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Spring Security是Spring家族中的一个安全管理框架。相比于另外一个安全框架Shiro，他提供更丰富的功能，社区资源也比Shiro丰富。</p>
+<p>一般来说中大型的项目都是使用SpringSecurity来做安全框架。小项目用Shiro的比较多，相比于SpringSecurity，Shiro的上手更加简单。</p>
+<p>一般Web应用需要进行认证和授权。</p>
+<p><strong>认证</strong>：验证当前访问系统的是不是本系统的用户，并且要具体确认是哪个用户。</p>
+<p><strong>授权</strong>：经过认证后判断当前用户是否有权限进行某个操作。</p>
+<p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--security--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-security<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>引入依赖后我们在尝试访问之前的接口就会自动跳转到一个SpringSecurity的默认登录页面，默认用户名是user，密码会输出在控制台。</p>
+<h1 id="登录校验流程"><a href="#登录校验流程" class="headerlink" title="登录校验流程"></a>登录校验流程</h1><ul>
+<li>前端携带用户名、密码访问登录接口</li>
+<li>与数据库中信息进行比较</li>
+<li>如果正确，生成JWT，并返回前端</li>
+<li>之后的请求中前端需要携带token，后端解析token响应请求</li>
+</ul>
+<h1 id="原理初探"><a href="#原理初探" class="headerlink" title="原理初探"></a>原理初探</h1><p>SpringSecurity实际上就是一个过滤器链，内部包含了提供各种功能的过滤器。</p>
+<ul>
+<li><strong>UsernamePasswordAuthenticationFilter</strong>：负责处理登录请求。</li>
+<li><strong>ExceptionTranslationFilter</strong>：处理过滤器链中抛出的任何AccessDeniedException和AuthenticationException。</li>
+<li><strong>FilterSecurityInterceptor</strong>：负责权限校验的过滤器。</li>
+</ul>
+<h1 id="相关准备"><a href="#相关准备" class="headerlink" title="相关准备"></a>相关准备</h1><p>引入依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--redis依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--fastjson依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.33<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--jwt依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.jsonwebtoken<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jjwt<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.9.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="添加redis相关配置"><a href="#添加redis相关配置" class="headerlink" title="添加redis相关配置"></a>添加redis相关配置</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.serializer.SerializerFeature;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.JavaType;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.type.TypeFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.serializer.RedisSerializer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.serializer.SerializationException;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.parser.ParserConfig;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.nio.charset.Charset;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Redis使用FastJson序列化</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FastJsonRedisSerializer</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">RedisSerializer</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset DEFAULT_CHARSET = Charset.forName(<span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Class&lt;T&gt; clazz;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        ParserConfig.getGlobalInstance().setAutoTypeSupport(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FastJsonRedisSerializer</span><span class="params">(Class&lt;T&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        <span class="keyword">this</span>.clazz = clazz;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(T t) <span class="keyword">throws</span> SerializationException &#123;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JSON.toJSONString(t, SerializerFeature.WriteClassName).getBytes(DEFAULT_CHARSET);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">deserialize</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> <span class="keyword">throws</span> SerializationException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (bytes == <span class="keyword">null</span> || bytes.length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String str = <span class="keyword">new</span> String(bytes, DEFAULT_CHARSET);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> JSON.parseObject(str, clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> JavaType <span class="title">getJavaType</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> TypeFactory.defaultInstance().constructType(clazz);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.FastJsonRedisSerializer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.connection.RedisConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.RedisTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.serializer.StringRedisSerializer;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> </span>&#123;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 避免出现乱码的情况</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(value = &#123;&quot;unchecked&quot;, &quot;rawtypes&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate&lt;Object, Object&gt; <span class="title">redisTemplate</span><span class="params">(RedisConnectionFactory connectionFactory)</span> </span>&#123;</span><br><span class="line">        RedisTemplate&lt;Object, Object&gt; template = <span class="keyword">new</span> RedisTemplate&lt;&gt;();</span><br><span class="line">        template.setConnectionFactory(connectionFactory);</span><br><span class="line"></span><br><span class="line">        FastJsonRedisSerializer serializer = <span class="keyword">new</span> FastJsonRedisSerializer(Object.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用StringRedisSerializer来序列化和反序列化redis的key值</span></span><br><span class="line">        template.setKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">        template.setValueSerializer(serializer);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Hash的key也采用StringRedisSerializer的序列化方式</span></span><br><span class="line">        template.setHashKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">        template.setHashValueSerializer(serializer);</span><br><span class="line"></span><br><span class="line">        template.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> template;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="响应类"><a href="#响应类" class="headerlink" title="响应类"></a>响应类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonInclude;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 响应类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@JsonInclude(JsonInclude.Include.NON_NULL)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResponseResult</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">//状态码</span></span><br><span class="line">    <span class="keyword">private</span> Integer code;</span><br><span class="line">    <span class="comment">//提示信息，如果有错误时，前端可以获取该字段进行提示</span></span><br><span class="line">    <span class="keyword">private</span> String msg;</span><br><span class="line">    <span class="comment">//查询到的结果数据</span></span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ResponseResult</span><span class="params">(Integer code, String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ResponseResult</span><span class="params">(Integer code, T data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCode</span><span class="params">(Integer code)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setData</span><span class="params">(T data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ResponseResult</span><span class="params">(Integer code, String msg, T data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="工具类"><a href="#工具类" class="headerlink" title="工具类"></a>工具类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.jsonwebtoken.Claims;</span><br><span class="line"><span class="keyword">import</span> io.jsonwebtoken.JwtBuilder;</span><br><span class="line"><span class="keyword">import</span> io.jsonwebtoken.Jwts;</span><br><span class="line"><span class="keyword">import</span> io.jsonwebtoken.SignatureAlgorithm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.crypto.SecretKey;</span><br><span class="line"><span class="keyword">import</span> javax.crypto.spec.SecretKeySpec;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.UUID;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JWT工具类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JwtUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有效期为</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Long JWT_TTL = <span class="number">60</span> * <span class="number">60</span> * <span class="number">1000L</span>;<span class="comment">// 60 * 60 *1000  一个小时</span></span><br><span class="line">    <span class="comment">//设置秘钥明文</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String JWT_KEY = <span class="string">&quot;sangeng&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getUUID</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String token = UUID.randomUUID().toString().replaceAll(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> token;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成jtw</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> subject token中要存放的数据（json格式）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">createJWT</span><span class="params">(String subject)</span> </span>&#123;</span><br><span class="line">        JwtBuilder builder = getJwtBuilder(subject, <span class="keyword">null</span>, getUUID());<span class="comment">// 设置过期时间</span></span><br><span class="line">        <span class="keyword">return</span> builder.compact();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成jtw</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> subject   token中要存放的数据（json格式）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ttlMillis token超时时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">createJWT</span><span class="params">(String subject, Long ttlMillis)</span> </span>&#123;</span><br><span class="line">        JwtBuilder builder = getJwtBuilder(subject, ttlMillis, getUUID());<span class="comment">// 设置过期时间</span></span><br><span class="line">        <span class="keyword">return</span> builder.compact();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> JwtBuilder <span class="title">getJwtBuilder</span><span class="params">(String subject, Long ttlMillis, String uuid)</span> </span>&#123;</span><br><span class="line">        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;</span><br><span class="line">        SecretKey secretKey = generalKey();</span><br><span class="line">        <span class="keyword">long</span> nowMillis = System.currentTimeMillis();</span><br><span class="line">        Date now = <span class="keyword">new</span> Date(nowMillis);</span><br><span class="line">        <span class="keyword">if</span> (ttlMillis == <span class="keyword">null</span>) &#123;</span><br><span class="line">            ttlMillis = JwtUtil.JWT_TTL;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">long</span> expMillis = nowMillis + ttlMillis;</span><br><span class="line">        Date expDate = <span class="keyword">new</span> Date(expMillis);</span><br><span class="line">        <span class="keyword">return</span> Jwts.builder()</span><br><span class="line">                .setId(uuid)              <span class="comment">//唯一的ID</span></span><br><span class="line">                .setSubject(subject)   <span class="comment">// 主题  可以是JSON数据</span></span><br><span class="line">                .setIssuer(<span class="string">&quot;sg&quot;</span>)     <span class="comment">// 签发者</span></span><br><span class="line">                .setIssuedAt(now)      <span class="comment">// 签发时间</span></span><br><span class="line">                .signWith(signatureAlgorithm, secretKey) <span class="comment">//使用HS256对称加密算法签名, 第二个参数为秘钥</span></span><br><span class="line">                .setExpiration(expDate);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建token</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> id</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> subject</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ttlMillis</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">createJWT</span><span class="params">(String id, String subject, Long ttlMillis)</span> </span>&#123;</span><br><span class="line">        JwtBuilder builder = getJwtBuilder(subject, ttlMillis, id);<span class="comment">// 设置过期时间</span></span><br><span class="line">        <span class="keyword">return</span> builder.compact();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        String token = <span class="string">&quot;eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg&quot;</span>;</span><br><span class="line">        Claims claims = parseJWT(token);</span><br><span class="line">        System.out.println(claims);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成加密后的秘钥 secretKey</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SecretKey <span class="title">generalKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);</span><br><span class="line">        SecretKey key = <span class="keyword">new</span> SecretKeySpec(encodedKey, <span class="number">0</span>, encodedKey.length, <span class="string">&quot;AES&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解析</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> jwt</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Claims <span class="title">parseJWT</span><span class="params">(String jwt)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        SecretKey secretKey = generalKey();</span><br><span class="line">        <span class="keyword">return</span> Jwts.parser()</span><br><span class="line">                .setSigningKey(secretKey)</span><br><span class="line">                .parseClaimsJws(jwt)</span><br><span class="line">                .getBody();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings(value = &#123; &quot;unchecked&quot;, &quot;rawtypes&quot; &#125;)</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisCache</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">public</span> RedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存基本的对象，Integer、String、实体类等</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存的键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 缓存的值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">setCacheObject</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> T value)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        redisTemplate.opsForValue().set(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存基本的对象，Integer、String、实体类等</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存的键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 缓存的值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeout 时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeUnit 时间颗粒度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">setCacheObject</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> T value, <span class="keyword">final</span> Integer timeout, <span class="keyword">final</span> TimeUnit timeUnit)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        redisTemplate.opsForValue().set(key, value, timeout, timeUnit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置有效时间</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key Redis键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeout 超时时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> true=设置成功；false=设置失败</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">expire</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> <span class="keyword">long</span> timeout)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> expire(key, timeout, TimeUnit.SECONDS);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置有效时间</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key Redis键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeout 超时时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unit 时间单位</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> true=设置成功；false=设置失败</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">expire</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> <span class="keyword">long</span> timeout, <span class="keyword">final</span> TimeUnit unit)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.expire(key, timeout, unit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得缓存的基本对象。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 缓存键值对应的数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getCacheObject</span><span class="params">(<span class="keyword">final</span> String key)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        ValueOperations&lt;String, T&gt; operation = redisTemplate.opsForValue();</span><br><span class="line">        <span class="keyword">return</span> operation.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除单个对象</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteObject</span><span class="params">(<span class="keyword">final</span> String key)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.delete(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除集合对象</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> collection 多个对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">deleteObject</span><span class="params">(<span class="keyword">final</span> Collection collection)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.delete(collection);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存List数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存的键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataList 待缓存的List数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 缓存的对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">long</span> <span class="title">setCacheList</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> List&lt;T&gt; dataList)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Long count = redisTemplate.opsForList().rightPushAll(key, dataList);</span><br><span class="line">        <span class="keyword">return</span> count == <span class="keyword">null</span> ? <span class="number">0</span> : count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得缓存的list对象</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存的键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 缓存键值对应的数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">getCacheList</span><span class="params">(<span class="keyword">final</span> String key)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForList().range(key, <span class="number">0</span>, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存Set</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 缓存键值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataSet 缓存的数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 缓存数据的对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">BoundSetOperations&lt;String, T&gt; <span class="title">setCacheSet</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> Set&lt;T&gt; dataSet)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        BoundSetOperations&lt;String, T&gt; setOperation = redisTemplate.boundSetOps(key);</span><br><span class="line">        Iterator&lt;T&gt; it = dataSet.iterator();</span><br><span class="line">        <span class="keyword">while</span> (it.hasNext())</span><br><span class="line">        &#123;</span><br><span class="line">            setOperation.add(it.next());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> setOperation;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得缓存的set</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">Set&lt;T&gt; <span class="title">getCacheSet</span><span class="params">(<span class="keyword">final</span> String key)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForSet().members(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 缓存Map</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dataMap</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">setCacheMap</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> Map&lt;String, T&gt; dataMap)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (dataMap != <span class="keyword">null</span>) &#123;</span><br><span class="line">            redisTemplate.opsForHash().putAll(key, dataMap);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得缓存的Map</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">Map&lt;String, T&gt; <span class="title">getCacheMap</span><span class="params">(<span class="keyword">final</span> String key)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForHash().entries(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 往Hash中存入数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key Redis键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hKey Hash键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">setCacheMapValue</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> String hKey, <span class="keyword">final</span> T value)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        redisTemplate.opsForHash().put(key, hKey, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取Hash中的数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key Redis键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hKey Hash键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Hash中的对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getCacheMapValue</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> String hKey)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        HashOperations&lt;String, String, T&gt; opsForHash = redisTemplate.opsForHash();</span><br><span class="line">        <span class="keyword">return</span> opsForHash.get(key, hKey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 删除Hash中的数据</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hkey</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delCacheMapValue</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> String hkey)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        HashOperations hashOperations = redisTemplate.opsForHash();</span><br><span class="line">        hashOperations.delete(key, hkey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取多个Hash中的数据</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key Redis键</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> hKeys Hash键集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Hash对象集合</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">getMultiCacheMapValue</span><span class="params">(<span class="keyword">final</span> String key, <span class="keyword">final</span> Collection&lt;Object&gt; hKeys)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.opsForHash().multiGet(key, hKeys);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得缓存的基本对象列表</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> pattern 字符串前缀</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 对象列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Collection&lt;String&gt; <span class="title">keys</span><span class="params">(<span class="keyword">final</span> String pattern)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> redisTemplate.keys(pattern);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebUtils</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将字符串渲染到客户端</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response 渲染对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> string 待渲染的字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">renderString</span><span class="params">(HttpServletResponse response, String string)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            response.setStatus(<span class="number">200</span>);</span><br><span class="line">            response.setContentType(<span class="string">&quot;application/json&quot;</span>);</span><br><span class="line">            response.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">            response.getWriter().print(string);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="数据库相关"><a href="#数据库相关" class="headerlink" title="数据库相关"></a>数据库相关</h1><p>相关依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--mysql依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.21<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--mybatis依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置yml文件</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/sys?characterEncoding=utf-8&amp;serverTimezone=UTC</span></span><br><span class="line">      <span class="attr">username:</span> <span class="string">xxxxxxx</span></span><br><span class="line">      <span class="attr">password:</span> <span class="string">xxxxxxx</span></span><br><span class="line">      <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:/mybatis/*.xml</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="重写登录流程"><a href="#重写登录流程" class="headerlink" title="重写登录流程"></a>重写登录流程</h1><h2 id="重写UserDetailsService"><a href="#重写UserDetailsService" class="headerlink" title="重写UserDetailsService"></a>重写UserDetailsService</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.kaka.entity.LoginUser;</span><br><span class="line"><span class="keyword">import</span> com.kaka.mapper.UserMapper;</span><br><span class="line"><span class="keyword">import</span> com.kaka.entity.User;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetails;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetailsService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UsernameNotFoundException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDetailsServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserDetailsService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserMapper userMapper;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> UserDetails <span class="title">loadUserByUsername</span><span class="params">(String username)</span> <span class="keyword">throws</span> UsernameNotFoundException </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 查询用户信息</span></span><br><span class="line">        User user = userMapper.listUserByName(username);</span><br><span class="line">        System.out.println(username);</span><br><span class="line">        <span class="keyword">if</span> (Objects.isNull(user)) &#123; <span class="comment">// 查询不到</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;用户名或者密码错误&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//TODO 查询对应的权限信息</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//把数据封装成UserDetails返回</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LoginUser(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="重写UserDetails类"><a href="#重写UserDetails类" class="headerlink" title="重写UserDetails类"></a>重写UserDetails类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.entity;</span><br><span class="line"><span class="keyword">import</span> lombok.AllArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> lombok.NoArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.GrantedAuthority;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetails;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginUser</span> <span class="keyword">implements</span> <span class="title">UserDetails</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> User user;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Collection&lt;? extends GrantedAuthority&gt; getAuthorities() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> user.getPassword();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUsername</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> user.getUsername();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAccountNonExpired</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAccountNonLocked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isCredentialsNonExpired</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEnabled</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="用户密码加密"><a href="#用户密码加密" class="headerlink" title="用户密码加密"></a>用户密码加密</h1><p>编写config类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.PasswordEncoder;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建BCrptPasswordEncoder注入容器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BCryptPasswordEncoder();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>两个函数</p>
+<ul>
+<li>passwordEncoder.encode(string s)  ：将s加密</li>
+<li>passwordEncoder.matches(string s1, string s2) ：将加密过的s1与原密码s2进行对比</li>
+</ul>
+<h1 id="登录接口"><a href="#登录接口" class="headerlink" title="登录接口"></a>登录接口</h1><p>自定义登录接口，让SpringSecurity对这个接口放行，让用户访问这个接口的时候不用登录也能访问。</p>
+<p>在接口中通过AuthenticationManager的authenticate方法来进行用户认证，所以需要在SecurityConfig中配置把AuthenticationManger注入容器中。</p>
+<p>编写登录接口业务（生成token并返回，将用户信息存入redis中）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.kaka.entity.LoginUser;</span><br><span class="line"><span class="keyword">import</span> com.kaka.entity.User;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.JwtUtil;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.RedisCache;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.ResponseResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.AuthenticationManager;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.Authentication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginServiceImpl</span> <span class="keyword">implements</span> <span class="title">LoginService</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AuthenticationManager authenticationManager;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisCache redisCache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseResult <span class="title">login</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//AuthenticationManager authenticate进行用户认证</span></span><br><span class="line">        UsernamePasswordAuthenticationToken authenticationToken = <span class="keyword">new</span> UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());</span><br><span class="line">        Authentication authentication = authenticationManager.authenticate(authenticationToken);</span><br><span class="line">        <span class="comment">//如果认证没通过，给出提示</span></span><br><span class="line">        <span class="keyword">if</span> (Objects.isNull(authentication)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;登录失败&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果认证通过，使用userid生成jwt</span></span><br><span class="line">        LoginUser loginUser = (LoginUser) authentication.getPrincipal();</span><br><span class="line">        String userid = loginUser.getUser().getId().toString();</span><br><span class="line">        String jwt = JwtUtil.createJWT(userid);</span><br><span class="line">        Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">&quot;token&quot;</span>, jwt);</span><br><span class="line">        <span class="comment">// 把用户信息写入redis中</span></span><br><span class="line">        redisCache.setCacheObject(<span class="string">&quot;login:&quot;</span>+userid, loginUser);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ResponseResult(<span class="number">200</span>, <span class="string">&quot;登录成功&quot;</span>, map);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.AuthenticationManager;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.builders.HttpSecurity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.http.SessionCreationPolicy;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.PasswordEncoder;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建BCrptPasswordEncoder注入容器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BCryptPasswordEncoder();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> AuthenticationManager <span class="title">authenticationManagerBean</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.authenticationManagerBean();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//放行登录接口</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http</span><br><span class="line">                <span class="comment">//关闭csrf</span></span><br><span class="line">                .csrf().disable()</span><br><span class="line">                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)</span><br><span class="line">                .and()</span><br><span class="line">                .authorizeRequests()</span><br><span class="line">                <span class="comment">//对于登录接口允许匿名访问（未认证可访问）</span></span><br><span class="line">                .antMatchers(<span class="string">&quot;/api/user/login&quot;</span>).anonymous()</span><br><span class="line">                <span class="comment">//除上面外所有请求都需要鉴权认证</span></span><br><span class="line">                .anyRequest().authenticated();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="redis配置"><a href="#redis配置" class="headerlink" title="redis配置"></a>redis配置</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">xxxxxxxxx</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">  <span class="attr">database:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">xxxxxxx</span></span><br><span class="line">  <span class="attr">timeout:</span> <span class="number">5000</span></span><br><span class="line">  <span class="attr">jedis:</span></span><br><span class="line">    <span class="attr">pool:</span></span><br><span class="line">      <span class="attr">max-active:</span> <span class="number">8</span></span><br><span class="line">      <span class="attr">max-idle:</span> <span class="number">8</span></span><br><span class="line">      <span class="attr">max-wait:</span> <span class="number">-1</span></span><br><span class="line">      <span class="attr">min-idle:</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="token认证过滤器"><a href="#token认证过滤器" class="headerlink" title="token认证过滤器"></a>token认证过滤器</h1><p>所有请求都会经过认证过滤器。</p>
+<p>如果不含有token的请求直接放行。</p>
+<p>如果含有token，解析并判断token是否正确。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.filter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.kaka.entity.LoginUser;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.JwtUtil;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.RedisCache;</span><br><span class="line"><span class="keyword">import</span> io.jsonwebtoken.Claims;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.context.SecurityContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.filter.OncePerRequestFilter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.FilterChain;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.kaka.utils.JwtUtil.parseJWT;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JwtAuthenticationTokenFilter</span> <span class="keyword">extends</span> <span class="title">OncePerRequestFilter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RedisCache redisCache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doFilterInternal</span><span class="params">(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 获取token</span></span><br><span class="line">        String token = request.getHeader(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (!StringUtils.hasText(token)) &#123;</span><br><span class="line">            <span class="comment">// 放行</span></span><br><span class="line">            filterChain.doFilter(request, response);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解析token</span></span><br><span class="line">        String userid;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Claims claims = parseJWT(token);</span><br><span class="line">            userid = claims.getSubject();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;tolen非法&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从redis中获取用户信息</span></span><br><span class="line">        String redisKey = <span class="string">&quot;login:&quot;</span> + userid;</span><br><span class="line">        LoginUser loginUser = redisCache.getCacheObject(redisKey);</span><br><span class="line">        <span class="keyword">if</span> (Objects.isNull(loginUser)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;用户未登录&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 存入SecurityContextHolder</span></span><br><span class="line">        <span class="comment">// TODO 获取权限信息封装到Authentication中</span></span><br><span class="line">        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = <span class="keyword">new</span> UsernamePasswordAuthenticationToken(loginUser,<span class="keyword">null</span>,<span class="keyword">null</span>);</span><br><span class="line">        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);</span><br><span class="line">        <span class="comment">// 放行</span></span><br><span class="line">        filterChain.doFilter(request, response);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置过滤器"><a href="#配置过滤器" class="headerlink" title="配置过滤器"></a>配置过滤器</h2><p>将其添加在<strong>UsernamePasswordAuthenticationFilter</strong>的后面，即在登录认证之前</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http</span><br><span class="line">        <span class="comment">//将过滤器添加到过滤器链的最前面</span></span><br><span class="line">        .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="退出登录"><a href="#退出登录" class="headerlink" title="退出登录"></a>退出登录</h1><p>不需要删除contextHolder中的用户信息，只需要删除redis中的用户信息即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ResponseResult <span class="title">logout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取SecurityContextHolder中的用户id</span></span><br><span class="line">    UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();</span><br><span class="line">    LoginUser loginUser = (LoginUser) authentication.getPrincipal();</span><br><span class="line">    Long userid = loginUser.getUser().getId();</span><br><span class="line">    <span class="comment">//删除redis中的值</span></span><br><span class="line">    redisCache.deleteObject(<span class="string">&quot;login:&quot;</span>+userid);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ResponseResult(<span class="number">200</span>, <span class="string">&quot;注销成功!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="授权"><a href="#授权" class="headerlink" title="授权"></a>授权</h1><h2 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h2><p>在SpringSecurity中，会使用默认的FilterSecurityInterceptor来进行权限校验。在Filter中会从SecurityContextHolder获取其中的Authentication，然后获取其中的权限信息。当前用户是否拥有访问当前资源所需的权限。</p>
+<p>在项目中只需要把当前登录用户的权限信息页存入Authentication，然后设置资源所需要的权限。</p>
+<h2 id="授权实现"><a href="#授权实现" class="headerlink" title="授权实现"></a>授权实现</h2><p>使用注解去指定访问对应的资源所需的权限。</p>
+<p>先开启相关配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableGlobalMethodSecurity(prePostEnable = true)</span></span><br></pre></td></tr></table></figure>
+
+<p>然后使用对应的注解。@PreAuthorize</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PreAuthorize(&quot;hasAuthority(&#x27;xxxx&#x27;)&quot;)</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h1><p>springboot跨域</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.CorsRegistry;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurer;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CorsConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addCorsMappings</span><span class="params">(CorsRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addMapping(<span class="string">&quot;/**&quot;</span>)</span><br><span class="line">                <span class="comment">// 设置允许跨域的路径</span></span><br><span class="line">                .allowedOriginPatterns(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                <span class="comment">// 是否允许cookie</span></span><br><span class="line">                .allowCredentials(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">// 设置允许的请求方式</span></span><br><span class="line">                .allowedMethods(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;POST&quot;</span>, <span class="string">&quot;DELETE&quot;</span>, <span class="string">&quot;PUT&quot;</span>)</span><br><span class="line">                <span class="comment">// 设置允许的header属性</span></span><br><span class="line">                .allowedHeaders(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                <span class="comment">// 允许跨域时间</span></span><br><span class="line">                .maxAge(<span class="number">3600</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SpringSecurity跨域</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http.cors();</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="自定义失败处理器"><a href="#自定义失败处理器" class="headerlink" title="自定义失败处理器"></a>自定义失败处理器</h1><p>认证失败处理器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.handler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.ResponseResult;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.WebUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.AuthenticationException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.web.AuthenticationEntryPoint;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AuthenticationEntryPointImpl</span> <span class="keyword">implements</span> <span class="title">AuthenticationEntryPoint</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">commence</span><span class="params">(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">          <span class="comment">// 处理异常</span></span><br><span class="line">        ResponseResult result = <span class="keyword">new</span> ResponseResult(HttpStatus.UNAUTHORIZED.value(), <span class="string">&quot;用户名密码不正确&quot;</span>);</span><br><span class="line">        String json = JSON.toJSONString(result);</span><br><span class="line">        WebUtils.renderString(response, json);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>授权失败处理器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.kaka.handler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.ResponseResult;</span><br><span class="line"><span class="keyword">import</span> com.kaka.utils.WebUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.access.AccessDeniedException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.AuthenticationException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.web.access.AccessDeniedHandler;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccessDeniedHandlerImpl</span> <span class="keyword">implements</span> <span class="title">AccessDeniedHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">        <span class="comment">// 处理异常</span></span><br><span class="line">        ResponseResult result = <span class="keyword">new</span> ResponseResult(HttpStatus.FORBIDDEN.value(), <span class="string">&quot;您的权限不足&quot;</span>);</span><br><span class="line">        String json = JSON.toJSONString(result);</span><br><span class="line">        WebUtils.renderString(response, json);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>添加到配置类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">http.exceptionHandling()</span><br><span class="line">        <span class="comment">//配置认证失败处理器</span></span><br><span class="line">        .authenticationEntryPoint(authenticationEntryPoint)</span><br><span class="line">        <span class="comment">//配置授权失败处理器</span></span><br><span class="line">        .accessDeniedHandler(accessDeniedHandler);</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+
+
+      <div>
+        
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+        
+      <div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringSecurity/" rel="tag"><i class="fa fa-tag"></i>SpringSecurity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/14/%E3%80%90vue%E3%80%91%E5%89%8D%E7%AB%AF%E7%99%BB%E5%BD%95%E8%AF%B7%E6%B1%82/" rel="prev" title="【vue】前端登录请求">
+      <i class="fa fa-chevron-left"></i> 【vue】前端登录请求
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E6%A0%A1%E9%AA%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">登录校验流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%E5%88%9D%E6%8E%A2"><span class="nav-number">3.</span> <span class="nav-text">原理初探</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%87%86%E5%A4%87"><span class="nav-number">4.</span> <span class="nav-text">相关准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0redis%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="nav-number">4.1.</span> <span class="nav-text">添加redis相关配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E7%B1%BB"><span class="nav-number">4.2.</span> <span class="nav-text">响应类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="nav-number">4.3.</span> <span class="nav-text">工具类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3"><span class="nav-number">5.</span> <span class="nav-text">数据库相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E7%99%BB%E5%BD%95%E6%B5%81%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text">重写登录流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99UserDetailsService"><span class="nav-number">6.1.</span> <span class="nav-text">重写UserDetailsService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99UserDetails%E7%B1%BB"><span class="nav-number">6.2.</span> <span class="nav-text">重写UserDetails类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86"><span class="nav-number">7.</span> <span class="nav-text">用户密码加密</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E6%8E%A5%E5%8F%A3"><span class="nav-number">8.</span> <span class="nav-text">登录接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E9%85%8D%E7%BD%AE"><span class="nav-number">8.1.</span> <span class="nav-text">redis配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#token%E8%AE%A4%E8%AF%81%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">9.</span> <span class="nav-text">token认证过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">9.1.</span> <span class="nav-text">配置过滤器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E7%99%BB%E5%BD%95"><span class="nav-number">10.</span> <span class="nav-text">退出登录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%88%E6%9D%83"><span class="nav-number">11.</span> <span class="nav-text">授权</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">11.1.</span> <span class="nav-text">基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%88%E6%9D%83%E5%AE%9E%E7%8E%B0"><span class="nav-number">11.2.</span> <span class="nav-text">授权实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%A8%E5%9F%9F"><span class="nav-number">12.</span> <span class="nav-text">跨域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%B1%E8%B4%A5%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">13.</span> <span class="nav-text">自定义失败处理器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ricar0"
+      src="/images/img.jpg">
+  <p class="site-author-name" itemprop="name">ricar0</p>
+  <div class="site-description" itemprop="description">退役ACMer/足球狗/刀斯林</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ricar0" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ricar0" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/kaka03200" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;kaka03200" rel="noopener" target="_blank"><i class="fa fa-life-ring fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/218014560" title="哔哩哔哩 → https:&#x2F;&#x2F;space.bilibili.com&#x2F;218014560" rel="noopener" target="_blank"><i class="fa fa-window-restore fa-fw"></i>哔哩哔哩</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://codeforces.ml/profile/kaka0320" title="CodeForces → https:&#x2F;&#x2F;codeforces.ml&#x2F;profile&#x2F;kaka0320" rel="noopener" target="_blank"><i class="fa fa-signal fa-fw"></i>CodeForces</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  
+
+  <a target="_blank" rel="noopener" href="https://github.com/ricar0"><span style="color: white;"class="author" itemprop="copyrightHolder">Github@ricar0</span></a>
+
+</div>
+<!--添加运行时间-->
+<span id="sitetime"></span>
+<script language=javascript>
+	function siteTime(){
+		window.setTimeout("siteTime()", 1000);
+		var seconds = 1000;
+		var minutes = seconds * 60;
+		var hours = minutes * 60;
+		var days = hours * 24;
+		var years = days * 365;
+		var today = new Date();
+		var todayYear = today.getFullYear();
+		var todayMonth = today.getMonth()+1;
+		var todayDate = today.getDate();
+		var todayHour = today.getHours();
+		var todayMinute = today.getMinutes();
+		var todaySecond = today.getSeconds();
+		/* 
+      Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+      year - 作为date对象的年份，为4位年份值
+      month - 0-11之间的整数，做为date对象的月份
+      day - 1-31之间的整数，做为date对象的天数
+      hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+      minutes - 0-59之间的整数，做为date对象的分钟数
+      seconds - 0-59之间的整数，做为date对象的秒数
+      microseconds - 0-999之间的整数，做为date对象的毫秒数
+     */
+		var t1 = Date.UTC(2021,10,05,18,12,20); //北京时间2018-2-13 00:00:00
+		var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+		var diff = t2-t1;
+		var diffYears = Math.floor(diff/years);
+		var diffDays = Math.floor((diff/days)-diffYears*365);
+		var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+		var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+		var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+		document.getElementById("sitetime").innerHTML=" 已运行"+/*diffYears+" 年 "+*/diffDays+" 天 "+diffHours+" 小时 "+diffMinutes+" 分钟 "+diffSeconds+" 秒";
+	}
+	siteTime();
+</script>
+
+<!-- 新增访客统计代码 -->
+<div class="busuanzi-count">
+    <script async="" src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      总访客 <span class="busuanzi-value" id="busuanzi_value_site_uv"></span> 人
+      <span class="post-meta-divider">|</span>
+    </span>
+    <div class="powered-by"></div>
+    <span class="site-uv">
+      <i class="fa fa-eye"></i>
+      访问量 <span class="busuanzi-value" id="busuanzi_value_site_pv"></span> 次
+    </span>
+    <!--
+    <span class="site-pv">
+      <i class="fa fa-pencil"></i>
+      本站博客共 <span class="post-count">42.0k</span> 字
+    </span>
+    -->
+</div>
+<!-- 新增访客统计代码 END-->
+
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='' opacity='' zIndex='' count='' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+  <script src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+  <script src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'W6nloyyieqRAwpa9CoawLHnh-9Nh9j0Va',
+      appKey     : 'iN7WhG0CbPnHtf227TzhvMy7',
+      placeholder: "说点什么吧！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+<div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div id="moon-menu-item-back2bottom" class="moon-menu-item">
+      <i class='fas fa-chevron-down'></i>    </div>
+    
+    <div id="moon-menu-item-back2top" class="moon-menu-item">
+      <i class='fas fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+</body>
+</html>
