@@ -199,6 +199,175 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ricar0.github.io/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/img.jpg">
+      <meta itemprop="name" content="ricar0">
+      <meta itemprop="description" content="退役ACMer/足球狗/刀斯林">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="kakaの博客">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/" class="post-title-link" itemprop="url">复试复习资料</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-03-25 10:33:39 / 修改时间：10:35:29" itemprop="dateCreated datePublished" datetime="2023-03-25T10:33:39+08:00">2023-03-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%8D%E8%AF%95%E8%B5%84%E6%96%99/" itemprop="url" rel="index"><span itemprop="name">复试资料</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/" class="post-meta-item leancloud_visitors" data-flag-title="复试复习资料" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><ol>
+<li><p>TCP位于<strong>传输层</strong>，IP位于<strong>网络层</strong>，UPD应用：<strong>DNS</strong>，<strong>媒体流传输</strong>，<strong>游戏开发</strong>，<strong>网络管理</strong></p>
+</li>
+<li><p>TCP/IP有几层？为什么没有物理层</p>
+<p>应用层、传输层、网络层、链路层</p>
+<p>TCP/IP模型是网络互联的模型,是已构建好的局域网的互联模型,而只有在局域网的构建中才需要考虑物理层</p>
+</li>
+<li><p>计算机网络中哪里存在流量控制</p>
+<ul>
+<li>数据链路层、传输层、应用层中，通过停止等待、选择重传、滑动窗口机制实现流量控制</li>
+</ul>
+</li>
+<li><p>交换机、路由器和集线器三者的区别</p>
+<p>集线器是物理层设备，用于将多个设备连接在一起形成局域网，其功能是将收到的信号广播给所有连接的设备。不能隔离广播域和冲突域。</p>
+<p>交换机是数据链路层设备，他负责将网络层提供的数据包分割成帧，并对每一帧添加头部和尾部，以便在物理层进行传输。交换机的主要功能是根据目标MAC地址对数据帧进行转发。可以隔离冲突域，不能隔离广播域。</p>
+<p>路由器是网络层设备，它通过查询路由表上的IP地址，将数据包转发到合适的接口。既可以隔离冲突域，又可以隔离广播域。</p>
+</li>
+<li><p>IP地址和MAC地址的区别</p>
+<p>IP地址是一个32位或128位的二进制数，通常用点分十进制来表示。MAC地址是一个48位二进制数，通常用冒号分隔的十六进制数表示。</p>
+<p>IP地址是用于在广域网上唯一标识一台设备，是逻辑地址，MAC地址用于在局域网上唯一标识一台设备，是物理地址。</p>
+<p>在分组转发时，MAC地址进入新的网络会发生变化，IP地址基本不变。</p>
+</li>
+<li><p>什么是MAC地址，为什么要有MAC地址</p>
+<p>MAC地址是用于标识网络设备的唯一地址。</p>
+<p>MAC地址起到记录下一跳信息的作用。</p>
+<p>在网络通信中，MAC地址被用于识别网络上的设备，以便将数据包正确地发送到目标设备。</p>
+</li>
+<li><p>网路层设备有哪些</p>
+<p>路由器、网关、路由交换机、NAT设备、防火墙</p>
+</li>
+<li><p>TCP和UDP的区别</p>
+<p>可靠性：TCP是面向连接的，是可靠的数据传输。UDP是无连接的，不保证数据可靠性。</p>
+<p>流量控制：TCP通过滑动窗口协议实现流量控制，UDP没有流量控制机制。</p>
+<p>拥塞控制：TCP通过拥塞窗口协议实现拥塞控制，UDP没有拥塞控制机制。</p>
+<p>适用场景：TCP使用与对数据传输可靠性高的应用场景，如文件传输、电子邮件等。UDP适用于对传输速度和实时性要求较高的应用场景，如实时音频传输、在线游戏等。</p>
+</li>
+<li><p>TCP依靠什么实现可靠传输</p>
+</li>
+</ol>
+<ul>
+<li><p>确认和重传机制：TCP使用序列号和确认号来跟踪发送和接收的数据，接收方会发送一个确认消息来确认已经收到的数据，如果发送方没有收到确认信号会进行重传，直到收到为止。</p>
+</li>
+<li><p>流量控制：TCP使用窗口机制来限制对方发送数据的速率，接收方告诉发送方最大的窗口以免数据丢失。</p>
+</li>
+<li><p>拥塞控制：当网络拥塞时，TCP减少发送数据的速率。</p>
+</li>
+<li><p>数据校验和机制：TCP使用校验和机制保证数据的完整性和可靠性。</p>
+</li>
+</ul>
+<ol start="10">
+<li>内部网关协议有哪些</li>
+</ol>
+<ul>
+<li><p>RIP：小规模，基于距离向量的路由协议，收敛速度较慢，应用层协议，交换自己的路由表</p>
+</li>
+<li><p>OSPF：基于链路状态的路由协议，可实现快速收敛和负载平衡，网络层协议，交换与自己相连接的所有路由器的链路状态</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/03/25/%E5%A4%8D%E8%AF%95%E5%A4%8D%E4%B9%A0%E8%B5%84%E6%96%99/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      
+
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ricar0.github.io/2023/02/14/%E3%80%90SpringBoot%E3%80%91Spring-Security%E6%A1%86%E6%9E%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -689,137 +858,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://ricar0.github.io/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/img.jpg">
-      <meta itemprop="name" content="ricar0">
-      <meta itemprop="description" content="退役ACMer/足球狗/刀斯林">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kakaの博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/" class="post-title-link" itemprop="url">【vue】路由组件</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-02-09 19:13:39" itemprop="dateCreated datePublished" datetime="2023-02-09T19:13:39+08:00">2023-02-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-11 19:59:45" itemprop="dateModified" datetime="2023-02-11T19:59:45+08:00">2023-02-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/" itemprop="url" rel="index"><span itemprop="name">vue</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/vue/%E8%B7%AF%E7%94%B1/" itemprop="url" rel="index"><span itemprop="name">路由</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/" class="post-meta-item leancloud_visitors" data-flag-title="【vue】路由组件" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="安装vue-router"><a href="#安装vue-router" class="headerlink" title="安装vue-router"></a>安装vue-router</h1><ul>
-<li><p>安装依赖</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install vue-router@3.5.2 --save</span><br></pre></td></tr></table></figure></li>
-<li><p>在main.js中引入</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">&#x27;@/router&#x27;</span>;</span><br></pre></td></tr></table></figure></li>
-<li><p>新建一个router文件夹，新建index.js</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span>;</span><br><span class="line"></span><br><span class="line">Vue.use(VueRouter);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> VueRouter (&#123;</span><br><span class="line">    <span class="comment">//配置路由</span></span><br><span class="line">    <span class="attr">routes</span>:[</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">path</span>: 路径名</span><br><span class="line">            <span class="attr">component</span>: 组件名</span><br><span class="line">        &#125;,</span><br><span class="line">        </span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="隐藏路由组件"><a href="#隐藏路由组件" class="headerlink" title="隐藏路由组件"></a>隐藏路由组件</h1><p>在某些页面中如果想要隐藏Header组件或Footer组件，可以设置meta</p>
-<p>router.js</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/02/09/%E3%80%90vue%E3%80%91%E8%B7%AF%E7%94%B1%E7%BB%84%E4%BB%B6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      
-
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -890,18 +928,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1003,7 +1041,7 @@
     <!--
     <span class="site-pv">
       <i class="fa fa-pencil"></i>
-      本站博客共 <span class="post-count">42.0k</span> 字
+      本站博客共 <span class="post-count">48.8k</span> 字
     </span>
     -->
 </div>
